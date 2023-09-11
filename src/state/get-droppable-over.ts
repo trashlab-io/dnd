@@ -1,15 +1,15 @@
 import type { Position, Rect } from 'css-box-model';
 import type {
+  Axis,
+  DraggableDimension,
   DroppableDimension,
   DroppableDimensionMap,
   DroppableId,
-  DraggableDimension,
-  Axis,
 } from '../types';
 import { toDroppableList } from './dimension-structures';
-import isPositionInFrame from './visibility/is-position-in-frame';
-import { distance, patch } from './position';
 import isWithin from './is-within';
+import { distance, patch } from './position';
+import isPositionInFrame from './visibility/is-position-in-frame';
 
 // https://stackoverflow.com/questions/306316/determine-if-two-rectangles-overlap-each-other
 // https://silentmatt.com/rectangle-intersection/
@@ -144,6 +144,15 @@ export default function getDroppableOver({
   // Only one candidate - use that!
   if (candidates.length === 1) {
     return candidates[0].descriptor.id;
+  }
+
+   // One of the candidates has the same Id as the draggable's droppableId,
+  // so use that.
+  const found = candidates.find(
+    (candidate) => candidate.descriptor.id === draggable.descriptor.droppableId,
+  );
+  if (found) {
+    return found.descriptor.id;
   }
 
   // Multiple options returned
