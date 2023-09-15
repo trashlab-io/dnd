@@ -155,6 +155,18 @@ export default function getDroppableOver({
     return found.descriptor.id;
   }
 
+  // From https://github.com/karanparmar1/react-dnd-beautiful/commit/22c3d328a9cfbc880f8bc58017bd741b27bd50c8
+  if (candidates.length) {
+    for (let i = 0; i < candidates.length; i++) {
+      if (candidates[i].descriptor.id === draggable.descriptor.droppableId) {
+        return candidates[i].descriptor.id;
+      }
+      if (candidates[i].descriptor.id.indexOf('HIGHEST_DROPPABLE') >= 0) {
+        return candidates[i].descriptor.id;
+      }
+    }
+  }
+
   // Multiple options returned
   // Should only occur with really large items
   // Going to use fallback: distance from home
